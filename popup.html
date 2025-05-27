@@ -2,112 +2,92 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <style>
-    body {
-      width: 300px;
-      padding: 15px;
-      font-family: Arial, sans-serif;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .send-btn {
-      background-color: #25d366;
-      color: white;
-    }
-
-    .send-btn:hover {
-      background-color: #128c7e;
-    }
-
-    .debug-btn {
-      background-color: #34495e;
-      color: white;
-    }
-
-    .debug-btn:hover {
-      background-color: #2c3e50;
-    }
-
-    .open-btn {
-      background-color: #3498db;
-      color: white;
-    }
-
-    .open-btn:hover {
-      background-color: #2980b9;
-    }
-
-    .status {
-      padding: 8px;
-      margin: 10px 0;
-      border-radius: 4px;
-      display: none;
-    }
-
-    .status.success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .status.error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-  </style>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <form id="messageForm">
-    <div class="form-group">
-      <label for="phoneNumber">Phone Number (with country code):</label>
-      <input type="text" id="phoneNumber" placeholder="+1234567890" required>
+  <div class="container">
+    <header>
+      <h1>⚡ WhatsBlitz ⚡</h1>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="single">Single Send</button>
+      <button class="tab-btn" data-tab="bulk">Bulk Send</button>
     </div>
 
-    <div class="form-group">
-      <label for="message">Message:</label>
-      <textarea id="message" placeholder="Type your message here..." required></textarea>
+    <!-- Single Message Tab -->
+    <div class="tab-content active" id="single">
+      <div class="form-section">
+        <h2>💬 Quick Message</h2>
+        
+        <form id="messageForm">
+          <div class="form-group">
+            <label for="phoneNumber">📱 Phone Number</label>
+            <input type="text" id="phoneNumber" placeholder="+1234567890" required>
+            <small>Include country code (e.g., +1 for US)</small>
+          </div>
+
+          <div class="form-group">
+            <label for="message">✉️ Message</label>
+            <textarea id="message" placeholder="Type your message here..." required rows="4"></textarea>
+          </div>
+
+          <button type="submit" class="send-btn">🚀 Send Message</button>
+        </form>
+      </div>
+
+      <button id="openWhatsApp" class="send-btn" style="margin-top: 10px; background: linear-gradient(135deg, rgba(255, 0, 255, 0.2) 0%, rgba(0, 255, 255, 0.2) 100%); border-color: #ff00ff;">
+        🌐 Open WhatsApp Web
+      </button>
+      
+      <button id="debugSend" class="send-btn" style="margin-top: 10px; background: linear-gradient(135deg, rgba(100, 100, 100, 0.2) 0%, rgba(150, 150, 150, 0.2) 100%); border-color: #888;">
+        ⚡ Debug Send
+      </button>
     </div>
 
-    <button type="submit" class="send-btn">Just Fill & Open WhatsApp</button>
-  </form>
+    <!-- Bulk Send Tab -->
+    <div class="tab-content" id="bulk">
+      <div class="form-section">
+        <h2>📊 Bulk Sender</h2>
+        
+        <div class="csv-upload-section">
+          <div class="form-group">
+            <label for="csvUpload">📁 Upload CSV/Excel File</label>
+            <input type="file" id="csvUpload" accept=".csv,.xlsx" />
+            <small>Format: name, phone, message columns required</small>
+            <div class="file-info" id="fileInfo"></div>
+          </div>
+        </div>
 
-  <button id="openWhatsApp" class="open-btn">Open WhatsApp Web</button>
-  <button id="debugSend" class="debug-btn">Now Send Message</button>
+        <div class="upload-status" id="uploadStatus"></div>
 
-  <div id="status" class="status"></div>
+        <div class="csv-preview" id="csvPreview" style="display: none;">
+          <div class="preview-header">
+            <h3>📋 Contact Preview</h3>
+            <button class="clear-btn" id="clearData">Clear</button>
+          </div>
+          <div class="preview-list" id="previewList"></div>
+        </div>
+
+        <button class="send-btn" id="startBulkSend" disabled>
+          🚀 Start Bulk Send
+        </button>
+
+        <div class="instructions">
+          <h4>📝 CSV Format Instructions:</h4>
+          <ol>
+            <li>Create a CSV file with columns: <strong>name</strong>, <strong>phone</strong>, <strong>message</strong></li>
+            <li>Phone numbers should include country code (e.g., +1234567890)</li>
+            <li>Use {{name}} in message to personalize (e.g., "Hi {{name}}, how are you?")</li>
+            <li>Save as .csv or .xlsx file</li>
+            <li>Upload and preview before sending</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div id="status" class="status-message"></div>
+  </div>
 
   <script src="popup.js"></script>
 </body>
